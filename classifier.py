@@ -1,17 +1,23 @@
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.datasets import load_wine
 from sklearn.model_selection import train_test_split
-from sklearn import metrics
+import matplotlib.pyplot as plt
+from sklearn.model_selection import learning_curve
 
 wine = load_wine()
 
 X = wine.data
 y = wine.target
+print(len(X))
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
 
-clf = AdaBoostClassifier(n_estimators=50, learning_rate=1)
-model = clf.fit(X_train, y_train)
-y_pred = model.predict(X_test)
+train_sizes, train_scores, valid_scores = learning_curve(AdaBoostClassifier(n_estimators=50, learning_rate=1), X, y, train_sizes=[0.2], shuffle=True, cv=20)
+print(train_scores)
+print(valid_scores)
 
-print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
+
+plt.plot(range(1, len(valid_scores[0]) + 1), valid_scores[0])
+plt.ylim(0,1.2)
+plt.show()
+
